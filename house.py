@@ -2,13 +2,13 @@ import os
 
 import pandas as pd
 import numpy as np
-import psutil
+#import psutil
 import rasterio
 import rasterio.mask
-from rasterio.plot import show
+#from rasterio.plot import show
 import plotly.graph_objects as go
-import matplotlib.pyplot as plt
-import plotly
+#import matplotlib.pyplot as plt
+#import plotly
 import requests, zipfile, io
 from utils.api import get_polygon_from_adress_params
 from utils.functions import find_index
@@ -22,7 +22,8 @@ class House:
                  params=None,
                  polygons=None,
                  raster_file_number=None,
-                 chms=None):
+                 chms=None,
+                 save_image=True):
         """
         Initializes the House class.
         :param params: Address of the house.
@@ -41,7 +42,7 @@ class House:
             self.chms = []
         else:
             self.chms = chms
-
+        self.save_image = save_image
 
     def ask_input(self):
         """
@@ -94,7 +95,7 @@ class House:
 
             self.chms.append(image_chm)
 
-    def show_chm(self, save=True):
+    def show_chm(self) -> None:
         """
         Plots the canopy height models of the house in 3D.
         Most of the time there should be only 1 chm.
@@ -106,12 +107,12 @@ class House:
             title = f'{self.params["postcode"]} {self.params["street_name"]} {self.params["house_number"]}'
             fig.update_layout(title=f'3D plot of {title}', autosize=True)
             fig.show()
+            if self.save:
+                fig.write_image(f'data/images/{self.params["postcode"]}_'
+                                f'{self.params["street_name"]}_'
+                                f'{self.params["house_number"]}({i}).png')
 
-            fig.write_image(f'data/images/{self.params["postcode"]}_'
-                            f'{self.params["street_name"]}_'
-                            f'{self.params["house_number"]}({i}).png')
-
-    def get_tif_files(self):
+    def get_tif_files(self) -> None:
         """
         Methods that checks if the DSM and DTM tif files are in the correct folder, if not, it downloads them.
         """
@@ -127,7 +128,8 @@ class House:
 
         if not os.path.exists(full_path_dsm):
             print('DSM tif not in data folder, downloading zip file now...')
-            dsm_url = f'https://downloadagiv.blob.core.windows.net/dhm-vlaanderen-ii-dsm-raster-1m/DHMVIIDSMRAS1m_k{k}.zip'
+            dsm_url = \
+                f'https://downloadagiv.blob.core.windows.net/dhm-vlaanderen-ii-dsm-raster-1m/DHMVIIDSMRAS1m_k{k}.zip'
             r_dsm = requests.get(dsm_url, stream=True)
             print("Downloaded zip file, unpacking the tif file...")
             print(dsm_url)
@@ -139,7 +141,8 @@ class House:
             print(f'{dsm} file found, no need to download.')
         if not os.path.exists(full_path_dtm):
             print('DTM tif not in data folder, downloading zip file now...')
-            dtm_url = f'https://downloadagiv.blob.core.windows.net/dhm-vlaanderen-ii-dtm-raster-1m/DHMVIIDTMRAS1m_k{k}.zip'
+            dtm_url = \
+                f'https://downloadagiv.blob.core.windows.net/dhm-vlaanderen-ii-dtm-raster-1m/DHMVIIDTMRAS1m_k{k}.zip'
             r_dtm = requests.get(dtm_url, stream=True)
             print("Downloaded zip file, unpacking the tif file...")
             z_dtm = zipfile.ZipFile(io.BytesIO(r_dtm.content))
@@ -148,17 +151,11 @@ class House:
         else:
             print(f'{dtm} file found, no need to download.')
 
-
-if __name__ == '__main__':
-    house = House()
-    house.get_polygon()
-    print(house.polygons)
-
-    house.get_raster_file_number()
-    print(house.raster_file_number)
-
-    house.get_tif_files()
-
-    house.get_chm()
-
-    house.show_chm()
+    def build_house(self) -> None:
+        """
+        Methad that calls all the methods needed to 'build' the house.
+        """
+        self.get_polygon()
+        self.get_raster_file_number()
+        self.get_chm()
+        self.show_chm()

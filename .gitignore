@@ -1,4 +1,8 @@
 *.ipynb_checkpoints
 .idea/
 data/
+!data/images/
+!data/images
+!data/images/chm.png
+!data/images/2000_bolivarplaats_20(0).png
 *__pycache__/
