@@ -69,7 +69,12 @@ class House:
         """
         _raster_coords = pd.read_csv('data/bounding_boxes_coordinates')
         _raster_coords.set_index('index', inplace=True)
-        _x, _y = self.polygons[0].bounds[:2]
+        try:
+            _x, _y = self.polygons[0].bounds[:2]
+        except IndexError:
+            print('no polygon found')
+            print(self.polygons)
+            _x, _y = self.polygons[0].bounds[:2]
         ind = find_index(_y, _raster_coords.index)
         col = find_index(_x, _raster_coords.columns)
         self.raster_file_number = str(_raster_coords.loc[ind, col])
@@ -107,7 +112,7 @@ class House:
             title = f'{self.params["postcode"]} {self.params["street_name"]} {self.params["house_number"]}'
             fig.update_layout(title=f'3D plot of {title}', autosize=True)
             fig.show()
-            if self.save:
+            if self.save_image:
                 fig.write_image(f'data/images/{self.params["postcode"]}_'
                                 f'{self.params["street_name"]}_'
                                 f'{self.params["house_number"]}({i}).png')

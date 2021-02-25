@@ -7,7 +7,7 @@
 
 ## Introduction
 
-This project is created with the goal of visualising a building starting from only the address.
+This project is created with the goal of visualising a building in 3D starting from only the address.
 
 ### Strategy
 1. Use an API call to https://api.basisregisters.vlaanderen.be/v1/adresmatch 
@@ -21,10 +21,10 @@ An example of DTM, DSM and CHM:
 ![Image](data/images/chm.png)
 
 3. Finally we can plot this data to get a virtual representation of the building. Although this is not perfect. 
-Since the data came from an LIDAR outside a plain we will only get the top down bird view.
-As a result, a bridge will look like a wall.
+Since the data is LIDAR taken from a plane we will only get the top down bird view.
+As a result, a bridge will look like a wall and an air-balloon will look like a tower when converted to 3D.
 
-An eample of a 3D plot (interactive when you run it yourself)
+An example of a 3D plot (interactive when you run it yourself)
 
 ![Image](data/images/2000_bolivarplaats_20(0).png)
 
