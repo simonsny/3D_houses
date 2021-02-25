@@ -36,6 +36,7 @@ An eample of a 3D plot (interactive when you run it yourself)
         - Saved plots of 3D houess
     - **bounding_boxes_coordinates**: Pandas dataframe with coordinate pairs as index and column 
     and values as folder number in which the data can be found.
+- **notebooks**: Notebooks to test out code
 - **utils**: module with function we need to build 3D plots
     -**api.py**: Functions that use *requests* to make api calls to *https://api.basisregisters.vlaanderen.be/v1/adresmatch*
     to get the polygons of a house/building
